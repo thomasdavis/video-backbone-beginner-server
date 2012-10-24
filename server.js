@@ -4,6 +4,7 @@ app.use(express.bodyParser());
 var nohm = require('nohm').Nohm;
 var redis = require('redis').createClient();
 nohm.setClient(redis);
+console.log(process.env.REDISTOGO_URL, 'asdasd');
 
 var User = nohm.model('User', {
   properties: {
