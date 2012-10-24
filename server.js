@@ -36,15 +36,20 @@ var listUsers = function (req, res) {
     var users = [];
     var len = ids.length;
     var count = 0;
-    ids.forEach(function (id) {
-      var user = new User();
-      user.load(id, function (err, props) {
-        users.push({id: this.id, firstname: props.firstname, lastname: props.lastname, age: props.age});
-        if (++count === len) {
-          res.send(users);
-        }
+    if(ids.length === 0) {
+      res.send([]);
+
+    } else {
+      ids.forEach(function (id) {
+        var user = new User();
+        user.load(id, function (err, props) {
+          users.push({id: this.id, firstname: props.firstname, lastname: props.lastname, age: props.age});
+          if (++count === len) {
+            res.send(users);
+          }
+        });
       });
-    });
+    }
   });
 }
 
