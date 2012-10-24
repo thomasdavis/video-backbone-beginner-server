@@ -2,9 +2,19 @@ var express = require('express');
 var app = express();
 app.use(express.bodyParser());
 var nohm = require('nohm').Nohm;
-var redis = require('redis').createClient();
+
+if (process.env.REDISTOGO_URL) {
+  // inside if statement
+  var rtg   = require("url").parse(process.env.REDISTOGO_URL);
+  var redis = require("redis").createClient(rtg.port, rtg.hostname);
+
+  redis.auth(rtg.auth.split(":")[1]);
+} else {
+  var redis = require("redis").createClient();
+}
+
 nohm.setClient(redis);
-console.log(process.env.REDISTOGO_URL, 'asdasd');
+
 var port = process.env.PORT || 3000;
 
 var User = nohm.model('User', {
