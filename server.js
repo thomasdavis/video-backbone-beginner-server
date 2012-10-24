@@ -36,6 +36,7 @@ var listUsers = function (req, res) {
     var users = [];
     var len = ids.length;
     var count = 0;
+    console.log(ids, 'ids');
     if(ids.length === 0) {
       res.send([]);
 
