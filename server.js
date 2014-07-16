@@ -13,7 +13,10 @@ if (process.env.REDISTOGO_URL) {
   var redis = require("redis").createClient();
 }
 
-nohm.setClient(redis);
+redis.on("connect", function() {
+    nohm.setClient(redis);
+    console.log("Nohm Connected to Redis Client");
+});
 
 var port = process.env.PORT || 3000;
 
@@ -90,14 +93,18 @@ var updateUser = function (req, res) {
 }
 app.all('*', function(req, res, next){
   res.header("Access-Control-Allow-Origin", "*");
-  res.header("Access-Control-Allow-Headers", "X-Requested-With");
+  res.header('Access-Control-Allow-Headers', 'X-Requested-With, origin, content-type, accept');
+  res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS');
   res.header("Content-Type", "application/json");
   next();
 });
+app.options('/users', listUsers);
 app.get('/users', listUsers);
+app.post('/users', createUser);
+
+app.options('/users/:id', userDetails);
 app.get('/users/:id', userDetails);
 app.del('/users/:id', deleteUser);
-app.post('/users', createUser);
 app.put('/users/:id', updateUser);
 
 app.listen(port);
